@@ -6,4 +6,4 @@ from balance.models import ListaMovimientos
 def inicio():
     lm = ListaMovimientos()
     lm.leer()
-    return render_template("inicio.html", items = lm.movimientos)
+    return render_template("inicio.html", items=lm.movimientos)
