@@ -1,6 +1,6 @@
 from balance import app
 from flask import render_template, request, redirect, url_for
-from balance.models import ListaMovimientos
+from balance.models import ListaMovimientos, Movimiento, ValidationError
 
 @app.route("/")
 def inicio():
@@ -11,12 +11,19 @@ def inicio():
 @app.route("/nuevo", methods=['GET', 'POST'])
 def nuevo():
     if request.method =='GET':
-        return render_template("nuevo_movimiento.html")
+        return render_template("nuevo_movimiento.html", errores=[], form={"fecha":"","concepto":"", "cantidad":""})
     else:
         datos = request.form
+        try:
+            movimiento= Movimiento(datos)
+        except ValidationError as msg:
+            return render_template("nuevo_movimiento.html", errores=[str(msg)], form=datos)
+
         lm = ListaMovimientos()
         lm.leer()
+
         lm.anyadir(datos)
         lm.escribir()
+
         return redirect(url_for("inicio"))
 
